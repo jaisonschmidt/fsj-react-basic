@@ -9,7 +9,6 @@ const Login = () => {
   const textEmail = useRef(null);
 
   useEffect(() => {
-    // document.getElementById("loginEmail").focus();
     document.title = "Login";
     textEmail.current.focus();
   }, []);
@@ -21,13 +20,7 @@ const Login = () => {
       <form>
         <div className="form-group">
           <label htmlFor="loginEmail">Informe seu e-mail:</label>
-
-          <input
-            type="email"
-            id="loginEmail"
-            className="form-control form-control-lg"
-            ref={textEmail}
-          />
+          <Input type="email" id="loginEmail" ref={textEmail} />
         </div>
 
         <Button type="submit">Entrar</Button>

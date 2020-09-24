@@ -1,13 +1,18 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-export const Input = ({ type, size, ...props }) => {
+export const Input = React.forwardRef(({ type, size, ...props }, ref) => {
   let inputSize = size !== "" ? ` form-control-${size}` : ``;
 
   return (
-    <input type={type} className={`form-control${inputSize}`} {...props} />
+    <input
+      type={type}
+      ref={ref}
+      className={`form-control${inputSize}`}
+      {...props}
+    />
   );
-};
+});
 
 Input.propTypes = {
   size: PropTypes.oneOf(["sm", "", "lg"]),
