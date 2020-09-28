@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import io from "socket.io-client";
 
 import { HeaderMain } from "../../components/elements/HeaderMain";
@@ -6,45 +6,58 @@ import { MessageForm } from "../../components/elements/MessageForm";
 import { MessageItem } from "../../components/elements/MessageItem";
 import { MessageList } from "../../components/elements/MessageList";
 
-// no componentDidMount conectar ao servidor de websocket
-// escutar eventos do servidor de websocket
-// emitir eventos ao servidor de websocket
+const Chat = ({ email , handleEmail }) => {
+  const [messages, setMessages] = useState([]);
+  const [users, setUsers] = useState([]);
+  const [socket] = useState(io("still-dawn-42110.herokuapp.com"));
 
-const Chat = ({ email }) => {
   useEffect(() => {
-    console.log("Entrou no useEffect");
-    const socket = io("https://helloworld-75kbewdfya-uc.a.run.app/");
-    console.log(email);
-    socket.emit("enterChat", email === "" ? "aaaa" : email, function (param) {
-      console.log("parametro");
-    });
-  }, [email]);
+    document.title = `Chat - conectado como ${email}`;
+  });
+
+  useEffect(() => {
+    console.log('Recebeu o email', email);
+
+    socket.emit("enterChat", email, () => {});
+    socket.on("updateMessages", (msg) => setMessages( messages => [...messages, msg]));
+    socket.on("updateUsers", (users) => setUsers(users));
+
+    return function chatExit() {
+      handleEmail("");
+      socket.disconnect();
+    }
+  }, [email, handleEmail, socket]);
 
   return (
     <div className="h-100 d-flex flex-column justify-content-between">
-      <HeaderMain />
+      <HeaderMain email={email} />
 
-      <MessageList>
-        <MessageItem
-          from="Outro usuário"
-          message="texto texto texto texto"
-          type="secondary"
-        />
+      <MessageList messages={messages}>
+        {messages.map( (obj, key) => {
+          let type;
 
-        <MessageItem
-          from="Eu"
-          message="texto texto texto texto"
-          type="warning"
-        />
+          switch (obj.tipo) {
+            case "sistema" :
+              type = "secondary";
+              break;
+            case "privada" :
+              type = "warning";
+              break;
+            default:
+              type = "info";
+          }
 
-        <MessageItem
-          from="Sistema"
-          message="texto texto texto texto"
-          type="info"
-        />
+          return (
+            <MessageItem
+              message={obj.msg}
+              type={type}
+              key={key}
+            />
+          )
+        })}
       </MessageList>
 
-      <MessageForm />
+      <MessageForm email={email} users={users} socket={socket} />
     </div>
   );
 };

@@ -7,7 +7,7 @@ import { Input } from "../../components/atomic/Input";
 
 import style from "./index.module.scss";
 
-const Login = ({ handleLogin }) => {
+const Login = ({handleEmail}) => {
   const [email, setEmail] = useState("");
 
   const textEmail = useRef(null);
@@ -16,7 +16,7 @@ const Login = ({ handleLogin }) => {
 
   const handleFormLogin = (e) => {
     e.preventDefault();
-    handleLogin(email);
+    handleEmail(email);
     history.push("/chat");
   };
 

@@ -1,18 +1,22 @@
 import React from "react";
+import { useHistory } from "react-router-dom";
 
 import { Button } from "../../atomic/Button";
 
-export const HeaderMain = () => {
+export const HeaderMain = ({email}) => {
+
+  let history = useHistory();
+
   return (
     <header className="bg-primary d-flex p-3 text-white">
       <div className="flex-grow-1 overflow-hidden mr-3">
         <small>Conectado como:</small>
         <div className="font-weight-bold">
-          jaisonschmidt@farmaciassaojoao.com.br
+          {email}
         </div>
       </div>
 
-      <Button color="light">Sair</Button>
+      <Button color="light" onClick={() => history.push("/")}>Sair</Button>
     </header>
   );
 };

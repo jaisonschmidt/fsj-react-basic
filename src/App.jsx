@@ -1,30 +1,50 @@
 import React, { useState } from "react";
 
-import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import { BrowserRouter as Router, Switch, Route, Redirect } from "react-router-dom";
 
 import Login from "./pages/Login";
 import Chat from "./pages/Chat";
 
 const App = () => {
-  const [email, setEmail] = useState("");
+  let [email, setEmail] = useState("");
 
-  const handleLogin = function (pEmail) {
-    setEmail(pEmail);
-  };
+  const handleEmail = (localEmail) => {
+    setEmail(localEmail);
+  }
 
   return (
     <Router>
       <Switch>
         <Route exact path="/">
-          <Login handleLogin={handleLogin} />
+          <Login handleEmail={handleEmail} />
         </Route>
 
-        <Route path="/chat">
-          <Chat email={email} />
-        </Route>
+        <PrivateRoute email={email} path="/chat">
+          <Chat email={email} handleEmail={handleEmail} />
+        </PrivateRoute>
       </Switch>
     </Router>
   );
 };
 
 export default App;
+
+function PrivateRoute({ children, ...rest }) {
+  return (
+    <Route
+      {...rest}
+      render={({ location }) =>
+        rest.email !== "" ? (
+          children
+        ) : (
+          <Redirect
+            to={{
+              pathname: "/",
+              state: { from: location }
+            }}
+          />
+        )
+      }
+    />
+  );
+}
