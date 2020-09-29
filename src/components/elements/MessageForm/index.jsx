@@ -4,23 +4,43 @@ import { Button } from "../../atomic/Button";
 import { Input } from "../../atomic/Input";
 import { Select, Option } from "../../atomic/Select";
 
-export const MessageForm = ({users}) => {
+export const MessageForm = ({users, email, socket}) => {
   const [to, setTo] = useState("");
+  const [message, setMessage] = useState("");
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    // { msg: message, usu: to }
+
+    socket.emit("sendMessage", { msg: message, usu: to }, () => {
+      setMessage("");
+    });
+
+  }
 
   return (
-    <div className="bg-primary d-flex p-3">
-      <div className="flex-grow-1 mr-3">
-        <Input
-          style={{ marginBottom: ".25rem" }}
-          size="lg"
-          placeholder="Mensagem..."
-        />
+    <form onSubmit={handleSubmit}>
+      <div className="bg-primary d-flex p-3">
+        <div className="flex-grow-1 mr-3">
+          <Input
+            style={{ marginBottom: ".25rem" }}
+            size="lg"
+            placeholder="Mensagem..."
+            value={message}
+            onChange={ (e) => setMessage(e.target.value) }
+          />
 
-        <Select size="sm" value={to} onChange={ (e) => setTo(e.target.value) }>
-          <Option>Selecione...</Option>
-        </Select>
+          <Select size="sm" value={to} onChange={ (e) => setTo(e.target.value) }>
+            <Option value="">Enviar para todos</Option>
+            {users.filter( (obj) => obj !== email ).map( (obj, key) => (
+              <Option value={obj} key={key}>{obj}</Option>
+            ))}
+          </Select>
+        </div>
+        
+        <Button type="submit" color="light">Enviar</Button>
       </div>
-      <Button color="light">Enviar</Button>
-    </div>
+    </form>
   );
 };
