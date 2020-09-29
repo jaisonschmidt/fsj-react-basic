@@ -1,18 +1,15 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-export const MessageItem = ({ type, from, message }) => {
+export const MessageItem = ({ type, message }) => {
   return (
     <div className={`alert alert-${type}`}>
-      <small>{from} diz:</small>
-
       <div className="mt-2">{message}</div>
     </div>
   );
 };
 
 MessageItem.propTypes = {
-  from: PropTypes.string.isRequired,
   message: PropTypes.string.isRequired,
   type: PropTypes.oneOf(["warning", "secondary", "info"]),
 };

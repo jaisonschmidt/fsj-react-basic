@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import { BrowserRouter as Router, Switch, Route, Redirect } from "react-router-dom";
 
 import Login from "./pages/Login";
 import Chat from "./pages/Chat";
@@ -19,12 +19,32 @@ const App = () => {
           <Login handleLogin={handleLogin} />
         </Route>
 
-        <Route path="/chat">
-          <Chat email={email} />
-        </Route>
+        <PrivateRoute email={email} path="/chat">
+          <Chat email={email} handleLogin={handleLogin} />
+        </PrivateRoute>
       </Switch>
     </Router>
   );
 };
 
 export default App;
+
+function PrivateRoute({ children, ...rest }) {
+  return (
+    <Route
+      {...rest}
+      render={({ location }) =>
+        rest.email !== "" ? (
+          children
+        ) : (
+          <Redirect
+            to={{
+              pathname: "/",
+              state: { from: location }
+            }}
+          />
+        )
+      }
+    />
+  );
+}

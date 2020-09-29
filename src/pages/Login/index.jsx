@@ -9,9 +9,7 @@ import style from "./index.module.scss";
 
 const Login = ({ handleLogin }) => {
   const [email, setEmail] = useState("");
-
   const textEmail = useRef(null);
-
   let history = useHistory();
 
   const handleFormLogin = (e) => {
